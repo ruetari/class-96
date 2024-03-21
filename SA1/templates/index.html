@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>Art Guard</title>
+  <!-- Add Bootstrap CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <!-- Font Awesome CSS -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" />
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.3/jquery.min.js"></script>
+<link rel="stylesheet" type="text/css" href="{{ '/static/css/blockStyle.css' }}" />
+<link href="https://db.onlinewebfonts.com/c/648605b9df9917bf501aaaa545e58043?family=HemiHeadRg-BoldItalic"
+  rel="stylesheet">
+  <link rel="stylesheet" type="text/css" href="{{ '/static/css/style.css' }}" />
+</head>
+
+<body>
+  <nav class="navbar navbar-dark bg-primary fixed-top">
+    <div class="container-fluid">
+      <!-- Logo -->
+      <a class="navbar-brand" href="#">
+        <img src="../static/assets/your_logo_image_url.png" alt="Logo" height="40px" class="d-inline-block align-text-top">
+        Art Guard
+      </a>
+
+      <!-- User Profile Icon with Dropdown Menu -->
+      <div class="dropdown">
+        <div class="navbar-text me-2" role="button" id="profileDropdown" data-bs-toggle="dropdown" aria-haspopup="true"
+          aria-expanded="false">
+          <i class="fa fa-user" style="font-size: 16px;"></i>
+        </div>
+        <div class="dropdown-menu dropdown-menu-end" aria-labelledby="profileDropdown">
+          <button class="dropdown-item" onclick="logout()">Logout</button>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col-md-2">
+        <!-- Left Navigation Bar -->
+        <nav class="navbar bg-light flex-column mt-5 pt-2" style="min-height: 100vh;">
+          <ul class="navbar-nav">
+            <li class="nav-item">
+              <a class="nav-link" href={{'/?node='+nodeId}}>Home</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href={{'/blockchain?node='+nodeId}}>Verify Blockchain</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href={{'/miningPool?node='+nodeId}}>Mining Pool</a>
+            </li>
+          </ul>
+        </nav>
+      </div>
+      <div class="col">
+        <div class="container col-11 mt-5 pt-5">
+          <div class="row">
+            {% set artData = {
+              '1000': ['Ethereal Symphony', '100', '../static/assets/1.jpg', 'A captivating digital painting that transcends reality through its abstract surrealist composition'],
+              '1001': ['Whispers of Nature', '140', '../static/assets/2.jpg', 'A remarkable bronze sculpture that captures the delicate beauty of natures intricate details'],
+              '1002': ['Synthetic Dreamscape', '240', '../static/assets/3.jpg', 'A futuristic mixed media installation that blurs the boundaries between reality and imagination'],
+              '1003': ['Harmony in Chaos', '540', '../static/assets/4.jpg', 'A striking black-and-white photograph that captures the essence of minimalist expressionism'],
+              '1004': ['Serenade of Seasons', '240', '../static/assets/5.jpg', 'A captivating oil painting that celebrates the ever-changing beauty of the natural world']
+            } %}
+            
+            {% for artId, artInfo in artData.items() %}
+              <div class="col-md-4 mb-4">
+                <div class="card h-100">
+                  <img src="{{ artInfo[2] }}" class="card-img-top img-fluid" alt="{{ artInfo[0] }}">
+                  <div class="card-body d-flex flex-column">
+                    <h5 class="card-title">{{ artInfo[0] }}</h5>
+                    <p class="card-text">{{ artInfo[3] }}.</p>
+                    <p class="card-text mt-auto">Price: ${{ artInfo[1] }}</p>
+                    <button class="btn btn-primary" onclick="openBuyModal('{{artId}}', '{{artInfo[0]}}', '{{artInfo[1]}}', '{{artInfo[2]}}', '{{artInfo[3]}}')">Buy</button>
+                  </div>
+                </div>
+              </div>
+            {% endfor %}
+            <!-- Add more product cards here -->
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- Buy Modal -->
+  <div class="modal fade" id="buyModal" tabindex="-1" aria-labelledby="buyModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="buyModalLabel" style="color: #e6990b;">Buy Artwork</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <div class="row">
+            <div class="col-md-6 modal-img">
+              <img src="" id="modalArtImage"
+                class="img-fluid mb-3" alt="Artwork">
+            </div>
+            <div class="col-md-6 modal-text">
+              <h5 id="modalArtTitle"></h5>
+              <p id="modalDescription"></p>
+              <p id="modalPrice"></p>
+              <p id="modalTransactionFees"></p>
+              <p >Current Transaction Fees: <span id="txnFee"></span></p>
+              <p >Gas Fees:  <span id="gasFee"></span></p>
+              <div class="form-check">
+                <input class="form-check-input" type="radio" name="mode" value="slow" id="slow">
+                <label class="form-check-label" for="slowTransaction">
+                  Slow Transaction (Lower Fee)
+                </label>
+              </div>
+              <div class="form-check">
+                <input class="form-check-input" type="radio" name="mode" value="fast" id="standard">
+                <label class="form-check-label" for="fastTransaction">
+                Standard Transaction (Avg Fee)
+                </label>
+              </div>
+              <div class="form-check">
+                <input class="form-check-input" type="radio" name="mode" value="fast" id="fast">
+                <label class="form-check-label" for="fastTransaction">
+                  Fast Transaction (High Fee)
+                </label>
+              </div>
+              <div class="form-check">
+                <input class="form-check-input" type="radio" name="mode" value="fast" id="rapid">
+                <label class="form-check-label" for="fastTransaction">
+                  Rapid Transaction (Higher Fee)
+                </label>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+          <form action="{{url_for('home', form ='f1')+ '&node='+ nodeId}}" method="post" id="form1" >
+            <input type="hidden" id="senderId" name="sender">
+            <input type="hidden" id="receiverId" name="receiver">
+            <input type="hidden" id="artId" name="artId">
+            <input type="hidden" id="price" name="amount">
+            <input type="hidden" id="fee" name="fee">
+            <input type="hidden" id="mode" name="mode">
+            <button type="submit" class="btn bg-warning " id="modalBtn" disabled>Buy Now</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+
+
+  <script>
+      function openBuyModal(artId, artName, artPrice, artUrl, artDescription) {
+      const modalArtImage = document.getElementById('modalArtImage');
+      const modalPrice = document.getElementById('modalPrice');
+      const modalDescription = document.getElementById('modalDescription');
+      const modal = new bootstrap.Modal(document.getElementById('buyModal'));
+
+      // Set the image, price, and description in the modal
+      const imageUrl = artUrl;
+      const price = artPrice;
+      const description = artDescription;
+       
+      
+      const senderInput = document.getElementById('senderId');
+      const receiverInput = document.getElementById('receiverId');
+      const artIdInput = document.getElementById('artId');
+      const priceInput = document.getElementById('price');
+      const feeInput = document.getElementById('fee');
+
+      senderInput.value = "sender1";
+      receiverInput.value = "receiver1";
+      artIdInput.value = artId;
+      priceInput.value = artPrice;
+      feeInput.value = "$1000";
+
+
+      modalArtImage.src = imageUrl;
+      modalPrice.innerText = `Price in Eth: ${price} Eth`;
+      modalDescription.innerText = `Description: ${description}`;
+
+      // Show the modal
+      modal.show();
+    }
+    // Function to toggle the visibility of the logout button
+    function toggleLogoutButton() {
+      var logoutButton = document.querySelector('.logout-button');
+      logoutButton.style.display = (logoutButton.style.display === 'block') ? 'none' : 'block';
+
+    }
+
+    // Function to handle the logout action (you can implement your logout logic here)
+    function logout() {
+      // Add your logout logic here
+      // For example, redirect the user to the logout page or clear user session data
+      alert('Logout button clicked. Implement your logout logic here.');
+    }
+
+    // Close the logout button when clicking outside the user profile icon
+    document.addEventListener('click', function (event) {
+      var userProfileIcon = document.querySelector('.fa-user');
+      var logoutButton = document.querySelector('.logout-button');
+
+      if (!userProfileIcon.contains(event.target)) {
+        logoutButton.style.display = 'none';
+      }
+    });
+
+    document.body.addEventListener('change', function (e) {
+            let target = e.target;
+            let message;
+            let data = {{allPrices | tojson}};
+            switch (target.id) {
+                case 'slow':
+                    type = "slow"
+                    break;
+                case 'standard':
+                    type = "standard"
+                    break;
+                case 'fast':
+                    type = "fast"
+                    break;
+                case 'rapid':
+                    type = "rapid"
+                    break;
+            }
+            
+           document.getElementById("mode").value = type; 
+           gasPrice = data[0][type]
+           ethPrice = data[2][type]
+           dollarPrice = data[3][type]
+
+           document.getElementById("txnFee").innerHTML = Number(ethPrice) * 21000 +" ETH ($ "+ Number(dollarPrice)*2100 +")"
+           document.getElementById("gasFee").innerHTML = Number(gasPrice)+" Gwei (ETH"+ Number(ethPrice)+")"
+
+        });
+
+    window.addEventListener('load', function() {
+      const checkboxes = document.querySelectorAll('.form-check-input');
+      const submitButton = document.getElementById('modalBtn');
+
+        checkboxes.forEach(checkbox => {
+            checkbox.addEventListener('click', () => {
+                submitButton.disabled = false;
+            });
+        });
+    }); 
+
+
+  </script>
+
+  <!-- Add Bootstrap JS and Popper.js -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+</body>
+
+</html>

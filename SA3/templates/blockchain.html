@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Art Guard</title>
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" />
+	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"></script>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.3/jquery.min.js"></script>
+	<link rel="stylesheet" type="text/css" href="{{ '/static/css/blockStyle.css' }}" />
+	<link href="https://db.onlinewebfonts.com/c/648605b9df9917bf501aaaa545e58043?family=HemiHeadRg-BoldItalic"
+		rel="stylesheet">
+</head>
+
+<body>
+	<nav class="navbar navbar-dark bg-primary fixed-top">
+		<div class="container-fluid">
+			<!-- Logo -->
+			<a class="navbar-brand" href="#">
+				<img src="/static/assets/your_logo_image_url.png" alt="Logo"  height="40"
+					class="d-inline-block align-text-top">
+				Art Guard
+			</a>
+
+			<!-- User Profile Icon with Dropdown Menu -->
+			<div class="dropdown">
+				<div class="navbar-text me-2" role="button" id="profileDropdown" data-bs-toggle="dropdown"
+					aria-haspopup="true" aria-expanded="false">
+					<i class="fa fa-user" style="font-size: 16px;"></i>
+				</div>
+				<div class="dropdown-menu dropdown-menu-end" aria-labelledby="profileDropdown">
+					<button class="dropdown-item" onclick="logout()">Logout</button>
+				</div>
+			</div>
+		</div>
+	</nav>
+	
+   <div class="row">
+	<div class=" col-2">
+		<nav class="navbar bg-light flex-column mt-5 pt-2" style="min-height: 100vh;">
+			<ul class="navbar-nav">
+			  <li class="nav-item">
+				<a class="nav-link" href={{'/?node='+nodeId}}>Home</a>
+			  </li>
+			  <li class="nav-item">
+				<a class="nav-link" href={{'/blockchain?node='+nodeId}}>Verify Blockchain</a>
+			  </li>
+			  <li class="nav-item">
+				<a class="nav-link" href={{'/miningPool?node='+nodeId}}>Mining Pool</a>
+			  </li>
+			</ul>
+		  </nav>
+	</div>
+	<div class=" col-10">
+		<div class="container-fluid d-flex flex-column justify-content-center p-5 h-100">
+			
+		<div class="mt-5 pt-4">
+			<form action="{{url_for('show')+'?node='+nodeId}}" method="post" id="miner">
+				<button type="submit" class="btn btn-secondary" id="node" name ="node" value="{{nodeId}}">Sync Blockchain</button>
+			</form>
+		</div>
+					<div class="all-boxes">
+						<div class="accordion" style="width: 90%; background-color: none;">
+							{% if blockChain %}
+							{% for block in blockChain %}
+							<!--Set style="background-color: red;" for following div if block is not valid-->
+							<div class="accordion-item" {%if block.isValid==false %} style="background-color: red;" {% endif %}>
+								<h2 class="accordion-header " style="background-color: none;" id="heading{{block.index}}">
+									<button class="accordion-button collapsed  card-header " type="button" data-bs-toggle="collapse"
+										data-bs-target="#collapse{{block.index}}" aria-expanded="false"
+										aria-controls="collapse{{block.index}}">
+
+										<div class="box-container">
+											<div class="box rotate">
+												<div class="box" onmousedown="startDrag(event)" onmousemove="drag(event)"
+													onmouseup="endDrag(event)" onclick="toggleInfoSection()">
+													<div class="box-front"></div>
+													<div class="box-back"></div>
+													<div class="box-right"></div>
+													<div class="box-left"></div>
+													<div class="box-top"></div>
+													<div class="box-bottom"></div>
+												</div>
+											</div>
+										</div>
+										<div class="header-data" style="margin-left: 40px; font-size: 1vw;">
+											<b>Block Number: </b> <span>#{{block.index}}</span>
+											<br>
+											<b>Previous Hash: </b> <span>{{block.previousHash}}</span><br>
+											<b>Current Hash: </b><span>{{block.currentHash}}</span> <br>
+											{%if block.difficulty and block.index>0%}
+											<b>Difficulty: </b><span>{{block.difficulty}}</span> <br>
+											{% endif %}
+											{%if block.isValid and block.index>0%}
+											<b>Is Valid: </b><span>{{block.isValid }}</span> <br>
+											{% endif %}
+											{%if block.nonce%}
+											<b>Nonce: </b><span>{{block.nonce}}</span> <br>
+											{% endif %}
+										</div>
+									</button>
+								</h2>
+
+
+								<div id="collapse{{block.index}}" class="accordion-collapse collapse"
+									aria-labelledby="heading{{block.index}}">
+
+									<div class="accordion-body">
+										{% for transaction in block.transactions %}
+										<div class="row">
+											<div class="col-md-4 mb-4">
+												<div class="card h-100">
+													<img src="" class="card-img-top img-fluid">
+													<div class="card-body">
+														<h5 class="card-title"></h5>
+														<p class="card-text">Sender: {{transaction.sender}}</p>
+														<p class="card-text">Receiver: {{transaction.receiver}} </p>
+														<p class="card-text">Art Id: {{transaction.artId}} </p>
+														<p class="card-text">Amount: {{transaction.amount}} </p>
+														<p class="card-text">Gas (Gwei) {{transaction.gasPriceGwei}} </p>
+														<p class="card-text">Gas (ETH): {{transaction.gasPriceEther}} </p>
+														<p class="card-text">Txn Fee (ETH): {{transaction.transactionFeeEther}} </p>
+														<p class="card-text">Txn Fee ($): {{transaction.transactionFeeDollar}} </p>
+													</div>
+												</div>
+											</div>
+										</div>
+										{% endfor %}
+									</div>
+
+
+								</div>
+							</div>
+							{% endfor %}
+							{% endif %}
+
+						</div>
+					</div>
+				</div>
+	</div>
+   </div>
+	
+
+	
+
+
+
+
+</body>
+
+</html>

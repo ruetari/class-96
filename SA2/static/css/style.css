@@ -1,0 +1,192 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins&display=swap');
+
+/* Custom CSS styles go here */
+body {
+  background-color: #f8f9fa;
+  background-image: url('../assets/New\ BG\ 2.png');
+  background-repeat: no-repeat;
+  background-position: center center;
+  background-size: cover;
+  font-family: 'Poppins', sans-serif;
+}
+
+.container-fluid{
+  padding: 0px;
+  height: -webkit-fill-available !important;
+}
+
+
+.bg-primary{
+  background-color: #fff !important;
+}
+
+.bg-light{
+  background-color: #ffffff79 !important
+}
+
+.container-fluid> .row{
+  width: 100%;
+}
+
+ul{
+  width: 90%;
+}
+li{
+  background-color: #fff!important;
+  margin-top: 35px;
+  width:100%;
+  text-align: center;
+  border-radius: 10px;
+}
+li>a{
+  color: #3f3f3f!important;
+  font-weight: 600!important;
+}
+.card {
+  background-color: #fff;
+  border: none;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  padding:3%;
+  border-radius: 20px;
+  box-shadow: 0px 0px 5px white;
+}
+.card-body{
+  justify-content: center;
+  padding: 0%;
+  padding-top: 5px;
+  background-color: #fff;
+}
+.card>img{
+  
+  border-radius: 17px;
+}
+.card-body p{
+  width: inherit;
+  margin-top: 0;
+  margin-bottom: 1rem;
+  text-overflow: clip;
+  overflow: hidden;
+  text-wrap: nowrap;
+}
+.card-body p:nth-last-of-type(1){
+  font-size: 16px;
+  font-weight: 900;
+  padding: 5px 0px;
+  margin: 5px 0px;
+  padding-top: 10px;
+
+}
+
+.card-body p:first-of-type{
+  font-size: 10px;
+  font-weight: 100;
+  padding-bottom: 2px;
+  padding: 0px;
+  margin: 0px;
+}
+
+.card-title{
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+}
+
+.col-md-4 .card button{
+  position: absolute;
+  bottom: 7%;
+  right: 5%;
+  width: fit-content;
+  background-color: #f7a845!important;
+  padding: 1% 5%;
+  border-radius: 10px;
+  text-shadow: 1px 1px 3px black;
+  border: none
+}
+.col-4 .card button{
+  width: fit-content;
+  background-color: #f7a845!important;
+  padding: 1% 5%;
+  border-radius: 10px;
+  text-shadow: 1px 1px 3px black;
+  border: none
+}
+.col-4 .card-body{
+ background-color: transparent;
+}
+
+center h1{
+  color: white;
+}
+
+.card-normal>p{
+  font-size: 14px!important;
+  margin-top: 0!important;
+  margin-bottom: 1rem!important;
+  font-weight: 200!important;
+}
+
+
+
+.modal-dialog {
+  max-width: 70%;
+  margin: 1.75rem auto;
+}
+
+.modal-content {
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  border-radius: 30px;
+}
+
+.modal-header .model-title {
+  background-color: #fff;
+  color: #e67e22!important;
+}
+
+.modal-footer {
+  background-color: #f8f9fa;
+}
+
+.btn, .btn-primary, #modalBtn{
+  background-color: #f39c12!important;
+  border: none;
+  border: 0px;
+  width:fit-content;
+}
+
+#modalBtn{
+    background-color: #f7a845!important;
+    border-radius: 10px;
+    text-shadow: 1px 1px 3px rgb(255, 255, 255);
+    color: white
+}
+.btn-secondary{
+  background-color: #e6dcd1!important;
+  border-radius: 10px;
+  text-shadow: 1px 1px 3px rgb(255, 255, 255);
+  color: rgb(56, 55, 55);
+  border: 0px;
+
+}
+
+.btn-primary:hover {
+  background-color: #e67e22;
+}
+
+/* Set the same height for card images */
+.card-img-top {
+  height: 150px; /* Adjust the height as needed */
+  object-fit: cover;
+}
+
+.col-md-4{
+  padding-left:5%;
+  padding-right:5%;
+}
+
+#modalArtImage{
+  border-radius: 20px;
+}
